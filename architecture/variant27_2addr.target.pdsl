@@ -1,0 +1,200 @@
+architecture variant27_2addr {
+
+	/*
+		case                variant27_2addr
+		data word length    4
+		code model          two-address (memory operands)
+		spaces              code, cst, dmem
+	*/
+
+	registers:
+		storage ip [32];   // instruction pointer (byte address)
+
+		// optional stack/frame (for call/ret convention)
+		storage sp [32];
+		storage bp [32];
+
+		// temps (internal VM state)
+		storage t0 [32];
+		storage t1 [32];
+
+		// flags (after cmpm)
+		storage zf [8];    // zero flag (1/0)
+		storage gf [8];    // greater flag (1/0)
+		storage lf [8];    // less flag (1/0)
+
+		// io ports
+		storage rin [8];
+		storage rout [8];
+
+	memory:
+		range code [0x0000 .. 0xffff] {
+			cell = 8;
+			endianess = little-endian;
+			granularity = 2;
+		}
+
+		range cst [0x0000 .. 0xffff] {
+			cell = 8;
+			endianess = little-endian;
+			granularity = 2;
+		}
+
+		range dmem [0x0000 .. 0xffff] {
+			cell = 8;
+			endianess = little-endian;
+			granularity = 2;
+		}
+
+	instructions:
+		encode imm16 field = immediate [16];
+		encode imm32 field = immediate [32];
+
+		// ---- control ----
+		instruction hlt = { 0001 0101 } { };
+
+		instruction jmp = { 0001 0000, imm16 as target } {
+			ip = target;
+		};
+
+		// jz_m addr, target  (checks dmem[addr] == 0)
+		instruction jz_m = { 0001 0001, imm16 as addr, imm16 as target } {
+			t0 = dmem:4[addr];
+			if t0 != 0 then
+				ip = ip + 5;   // opcode + imm16 + imm16
+			else
+				ip = target;
+		};
+
+		// jnz_m addr, target (checks dmem[addr] != 0)
+		instruction jnz_m = { 0001 0010, imm16 as addr, imm16 as target } {
+			t0 = dmem:4[addr];
+			if t0 != 0 then
+				ip = target;
+			else
+				ip = ip + 5;
+		};
+
+		// ---- stack/frame helpers (optional but useful later) ----
+		instruction ldsp = { 0001 0110, imm16 as value } {
+			sp = value;
+			ip = ip + 3;
+		};
+
+		instruction setbp = { 0010 1101 } {
+			bp = sp;
+			ip = ip + 1;
+		};
+
+		// call/ret (uses dmem bank as stack)
+		instruction call = { 0001 0011, imm16 as target } {
+			// push return
+			sp = sp - 4;
+			dmem:4[sp] = ip + 3;
+			// push old bp
+			sp = sp - 4;
+			dmem:4[sp] = bp;
+			bp = sp;
+			ip = target;
+		};
+
+		instruction ret = { 0001 0100 } {
+			t0 = dmem:4[bp];        // old bp
+			ip = dmem:4[bp + 4];    // return address
+			sp = bp + 8;
+			bp = t0;
+		};
+
+		// ---- io (via hidden regs rin/rout) ----
+		instruction inm = { 0011 0000, imm16 as dst } {
+			dmem:4[dst] = rin;
+			ip = ip + 3;
+		};
+
+		instruction outm = { 0011 0001, imm16 as src } {
+			rout = dmem:4[src];
+			ip = ip + 3;
+		};
+
+		// ---- data movement ----
+		// setm dst, imm32   => dmem[dst] = imm32
+		instruction setm = { 0010 0000, imm16 as dst, imm32 as value } {
+			dmem:4[dst] = value;
+			ip = ip + 7;  // 1 + 2 + 4
+		};
+
+		// movm dst, src     => dmem[dst] = dmem[src]
+		instruction movm = { 0010 0001, imm16 as dst, imm16 as src } {
+			dmem:4[dst] = dmem:4[src];
+			ip = ip + 5;
+		};
+
+		// ---- arithmetic / logic (two-address, memory operands) ----
+		instruction addm = { 0010 0010, imm16 as dst, imm16 as src } {
+			dmem:4[dst] = dmem:4[dst] + dmem:4[src];
+			ip = ip + 5;
+		};
+
+		instruction subm = { 0010 0011, imm16 as dst, imm16 as src } {
+			dmem:4[dst] = dmem:4[dst] - dmem:4[src];
+			ip = ip + 5;
+		};
+
+		instruction mulm = { 0010 0100, imm16 as dst, imm16 as src } {
+			dmem:4[dst] = dmem:4[dst] * dmem:4[src];
+			ip = ip + 5;
+		};
+
+		// ---- compare (sets flags) ----
+		instruction cmpm = { 0010 0111, imm16 as a, imm16 as b } {
+			t0 = dmem:4[a];
+			t1 = dmem:4[b];
+			zf = (t0 == t1);
+			gf = (t0 >  t1);
+			lf = (t0 <  t1);
+			ip = ip + 5;
+		};
+
+		instruction jzf = { 0010 1000, imm16 as target } {
+			if zf != 0 then ip = target; else ip = ip + 3;
+		};
+
+		instruction jgf = { 0010 1001, imm16 as target } {
+			if gf != 0 then ip = target; else ip = ip + 3;
+		};
+
+		instruction jlf = { 0010 1010, imm16 as target } {
+			if lf != 0 then ip = target; else ip = ip + 3;
+		};
+
+	mnemonics:
+		format plain0 is "";
+		format plain1 is "{1}";
+		format two    is "{1} {2}";
+
+		mnemonic hlt() plain0;
+
+		mnemonic jmp(target) plain1;
+		mnemonic jz_m(addr, target) two;
+		mnemonic jnz_m(addr, target) two;
+
+		mnemonic ldsp(value) plain1;
+		mnemonic setbp() plain0;
+		mnemonic call(target) plain1;
+		mnemonic ret() plain0;
+
+		mnemonic inm(dst) plain1;
+		mnemonic outm(src) plain1;
+
+		mnemonic setm(dst, value) two;
+		mnemonic movm(dst, src) two;
+
+		mnemonic addm(dst, src) two;
+		mnemonic subm(dst, src) two;
+		mnemonic mulm(dst, src) two;
+
+		mnemonic cmpm(a, b) two;
+		mnemonic jzf(target) plain1;
+		mnemonic jgf(target) plain1;
+		mnemonic jlf(target) plain1;
+}

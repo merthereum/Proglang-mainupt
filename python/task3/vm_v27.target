@@ -1,0 +1,53 @@
+registers:
+    storage ip [32];    // instruction pointer
+    storage sp [32];    // stack pointer (çağrılar ve lokaller için)
+    storage bp [32];    // frame pointer
+
+    // genel amaçlı registerlar (iki-adresli makine için)
+    storage r0 [32];
+    storage r1 [32];
+    storage r2 [32];
+    storage r3 [32];
+
+    // geçici (VM içi)
+    storage t0 [32];
+    storage t1 [32];
+
+    // I/O port (gizli register ile)
+    storage rin  [8];
+    storage rout [8];
+
+memory:
+    range code [0x0000 .. 0xffff] {
+        cell = 8;
+        endianess = little-endian;
+        granularity = 2;
+    }
+
+    range constants [0x0000 .. 0xffff] {
+        cell = 8;
+        endianess = little-endian;
+        granularity = 2;
+    }
+
+    range data [0x0000 .. 0xffff] {
+        cell = 8;
+        endianess = little-endian;
+        granularity = 2;
+    }
+
+instructions:
+    encode imm16 field = immediate [16];
+    encode imm32 field = immediate [32];
+
+    // --- kontrol ---
+    instruction hlt = { 0000 0001 } { };
+
+    instruction jmp = { 0000 0010, imm16 as target } {
+        ip = target;
+    };
+
+    // jz rX, target  (rX == 0 ise atla)
+    // NOT: register alanı burada örnek; ders toolchain'inde register alanı nasıl encode ediliyor
+    // arkadaşındaki örneklerde sadece imm16/imm32 var. Bu kısım toolchain syntax'ına göre uyarlanacak.
+    // Şimdilik mantığı tanımlıyoruz.

@@ -1,0 +1,16 @@
+function main(a as int, b as int) as int
+dim x, y as int
+x = a + b;
+if x > 0 then
+  y = x * 2;
+else
+  y = 0;
+end if
+while y > 0
+  y = y - 1;
+wend
+do
+  x = x + 1;
+  break
+loop until x > 10
+end function

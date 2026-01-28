@@ -1,0 +1,63 @@
+﻿function x() as int
+dim a, b as int
+a = 0;
+b = 0;
+x = 0;
+end function
+
+function y() as int
+y = 0;
+end function
+
+function main(a as int, b as int) as int
+dim x, yv as int
+dim i as int
+
+x = a + b;
+
+if x > 0 then
+  yv = x * 2;
+else
+  yv = 0;
+end if
+
+while yv > 0
+  yv = yv - 1;
+wend
+
+do
+  x = x + 1;
+  break
+loop until x > 10
+
+if 1 then
+  if 2 then
+    if 3 then
+      x = x + 1;
+    else
+      x = x + 2;
+    end if
+  else
+    x = x + 3;
+  end if
+end if
+
+if a > 3 then
+  x = x + 1;
+else
+  x = x + 2;
+end if
+
+i = 0;
+while i < 10
+  if a > b then
+    i = i + 2;
+  else if 2 * 3 then
+    break
+  else
+    i = i + 1;
+  end if
+wend
+
+main = x;
+end function

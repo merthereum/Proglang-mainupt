@@ -1,0 +1,14 @@
+digraph "x" {
+  node [shape=box];
+  n0 [label="ENTRY"];
+  n1 [label="EXIT"];
+  n2 [label="dim a, b as int"];
+  n3 [label="(a = 0);"];
+  n4 [label="(b = 0);"];
+  n5 [label="(x = 0);"];
+  n0 -> n2;
+  n2 -> n3;
+  n3 -> n4;
+  n4 -> n5;
+  n5 -> n1;
+}

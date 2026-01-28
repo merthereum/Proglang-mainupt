@@ -1,0 +1,123 @@
+method x(): int
+var
+    a, b: int;
+begin
+end;
+
+method y(): int
+begin
+end;
+
+
+method main(): int
+var
+    a, b, i: int;
+begin
+    printf("1");
+
+    while 1 do
+        begin
+            printf("2");
+
+            while 2 do
+                begin
+                    printf("3");
+
+                    if 3 then
+                        printf("break\n");
+                    else
+                        if 4 then
+                            printf("continue\n");
+                        else
+                            begin
+                                printf("labb:\n");
+                                printf("4");
+                            end;
+                end;
+
+            printf("5");
+
+            if 5 then
+                printf("break\n");
+            else
+                if 6 then
+                    printf("continue\n");
+                else
+                    printf("6");
+
+            printf("7");
+
+            repeat
+                begin
+                    printf("8");
+                    if 9 then
+                        printf("break\n");
+                end;
+            while 10;
+
+            printf("11");
+
+            if 11 then
+                printf("break\n");
+            else
+                if 12 then
+                    printf("continue\n");
+                else
+                    begin
+                        printf("12");
+                        printf("goto labb\n");
+                    end;
+
+            printf("13");
+        end;
+
+    printf("14");
+
+    if a > 3 then
+        begin
+            printf("1\n");
+        end;
+    else
+        begin
+            printf("2\n");
+            printf("goto lab\n");
+        end;
+
+    while i < 10 do
+        begin
+            if a > b then
+                i := i + 2;
+            else
+                if 2 * 3 then
+                    printf("break\n");
+                else
+                    printf("continue\n");
+        end;
+
+    if 1 then
+        if 2 then
+            if 3 then
+                x();
+            else
+                y();
+        else
+            z();
+
+    if a > 3 then
+        begin
+            printf("1\n");
+        end;
+    else
+        begin
+            printf("2\n");
+            printf("22\n");
+            printf("222\n");
+        end;
+
+    while a < 3 do
+        begin
+            printf("3\n");
+        end;
+
+    printf("Hello!\n");
+end;

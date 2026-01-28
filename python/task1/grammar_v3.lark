@@ -1,0 +1,116 @@
+// --------- Lexer ---------
+%import common.NEWLINE
+%import common.WS_INLINE
+%ignore WS_INLINE
+
+COMMENT: /\/\/[^\n]*/
+%ignore COMMENT
+
+// Builtin types: higher priority than IDENTIFIER
+BUILTIN_TYPE.10: "bool"|"byte"|"int"|"uint"|"long"|"ulong"|"char"|"string"
+
+// IDENTIFIER: must NOT match keywords/operators/builtin types/bools
+IDENTIFIER.1: /(?!function\b|end\b|dim\b|as\b|if\b|then\b|else\b|while\b|wend\b|do\b|loop\b|until\b|break\b|true\b|false\b|and\b|or\b|not\b|bool\b|byte\b|int\b|uint\b|long\b|ulong\b|char\b|string\b)[a-zA-Z_][a-zA-Z_0-9]*/
+
+BOOL: "true" | "false"
+HEX: /0[xX][0-9A-Fa-f]+/
+BITS: /0[bB][01]+/
+DEC: /[0-9]+/
+STR: /"[^"\\]*(?:\\.[^"\\]*)*"/
+CHAR: /'[^']'/
+
+// --------- Operators as named tokens ---------
+ASSIGN_OP: "="
+
+OR_OP: "or" | "||"
+AND_OP: "and" | "&&"
+
+BOR_OP: "|"
+BXOR_OP: "^"
+BAND_OP: "&"
+
+CMP_OP: "==" | "!=" | "<=" | ">=" | "<" | ">"
+SHIFT_OP: "<<" | ">>"
+
+ADD_OP: "+" | "-"
+MUL_OP: "*" | "/" | "%"
+
+UNARY_OP: "not" | "!" | "~"
+
+// --------- Helpers ---------
+_sep: (NEWLINE)+
+_seps: (NEWLINE)*
+
+// --------- Program ---------
+start: _seps source _seps
+source: (source_item _seps)*
+source_item: func_def
+
+// --------- Types ---------
+?type_ref: base_type array_suffix*
+base_type: BUILTIN_TYPE      -> type_builtin
+         | IDENTIFIER        -> type_custom
+
+array_suffix: "(" comma_list? ")"
+comma_list: ","+
+
+// --------- Functions ---------
+// (İpucu: _seps burada boş olabildiği için "end function" bekleme karışıklığı olabilir,
+// ama senin örnek dosyan "end function" içerdiğinden sorun olmaz.)
+func_def: "function" func_signature ( _seps statement* "end" "function")?
+
+func_signature: IDENTIFIER "(" arg_list? ")" ("as" type_ref)?
+arg_list: arg_def ("," arg_def)*
+arg_def: IDENTIFIER ("as" type_ref)?
+
+// --------- Statements ---------
+?statement: var_stmt
+          | if_stmt
+          | while_stmt
+          | do_stmt
+          | break_stmt
+          | expr_stmt
+
+var_stmt: "dim" ident_list "as" type_ref _seps
+ident_list: IDENTIFIER ("," IDENTIFIER)*
+
+if_stmt: "if" expr "then" _seps statement* ("else" _seps statement*)? "end" "if" _seps
+while_stmt: "while" expr _seps statement* "wend" _seps
+do_stmt: "do" _seps statement* "loop" ("while"|"until") expr _seps
+break_stmt: "break" _seps
+
+expr_stmt: expr ";" _seps
+
+// --------- Expressions ---------
+?expr: assign
+
+?assign: logic_or (ASSIGN_OP assign)?            -> assign
+
+?logic_or: logic_and (OR_OP logic_and)*          -> bin
+?logic_and: bitor (AND_OP bitor)*                -> bin
+?bitor: bitxor (BOR_OP bitxor)*                  -> bin
+?bitxor: bitand (BXOR_OP bitand)*                -> bin
+?bitand: compare (BAND_OP compare)*              -> bin
+
+?compare: shift (CMP_OP shift)*                  -> bin
+?shift: sum (SHIFT_OP sum)*                      -> bin
+?sum: term (ADD_OP term)*                        -> bin
+?term: unary (MUL_OP unary)*                     -> bin
+
+?unary: ((ADD_OP|UNARY_OP) unary)                -> unary
+      | postfix
+
+?postfix: atom ( "(" call_args? ")" )*           -> call_or_indexer
+
+call_args: expr ("," expr)*
+
+?atom: "(" expr ")"                              -> braces
+     | IDENTIFIER                                -> place
+     | literal
+
+literal: BOOL -> lit_bool
+       | STR  -> lit_str
+       | CHAR -> lit_char
+       | HEX  -> lit_hex
+       | BITS -> lit_bits
+       | DEC  -> lit_dec

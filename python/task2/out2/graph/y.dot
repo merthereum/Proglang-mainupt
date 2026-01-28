@@ -1,0 +1,8 @@
+digraph "y" {
+  node [shape=box];
+  n0 [label="ENTRY"];
+  n1 [label="EXIT"];
+  n2 [label="(y = 0);"];
+  n0 -> n2;
+  n2 -> n1;
+}

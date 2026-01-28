@@ -1,0 +1,4 @@
+function main(a as int) as int
+dim x as int
+x = 1 + ;
+end function
