@@ -67,8 +67,7 @@ ENTRY → dim → присваивания if (x > 0) ветви True/False и j
 ✅ python -m task2.cli .\src\examples\bad_syntax.v3 .\out_bad --png
 more .\out_bad\call_graph.errors.txt
 
-Ожидаемый результат: 
-:star: в файле call_graph.errors.txt будет ошибка с указанием строки и столбца, например [parse error] line=... col=... 
+:star: Ожидаемый результат: в файле call_graph.errors.txt будет ошибка с указанием строки и столбца, например [parse error] line=... col=... 
 
 ---
 
