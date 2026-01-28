@@ -117,7 +117,7 @@ Get-Content .\out3\disasm_real_2addr.txt -TotalCount 10 | Out-Host
 .\tools\ptp\Portable.RemoteTasks.Manager.exe -ul 503291 -up "b551163b-6741-4c92-b016-01f99e8a9947" -g $RUNID -r stderr.txt -o out3\run_stderr_real_2addr.txt
 .\tools\ptp\Portable.RemoteTasks.Manager.exe -ul 503291 -up "b551163b-6741-4c92-b016-01f99e8a9947" -g $RUNID -r trace.txt  -o out3\run_trace_real_2addr.txt
 
-!!!!calculator!!!!
+--- Calculator ----
 
 1. Показать входной файл
 
@@ -161,7 +161,7 @@ $ASSEMBLE_ID
 
 3) ✅ & .\tools\ptp\Portable.RemoteTasks.Manager.exe `
   -ul 503291 -up "b551163b-6741-4c92-b016-01f99e8a9947" `
-  -g bbe52e78-430b-4bb4-b928-bd79e94471c6 -r out.ptptb -o out3\fib_variant27_2addr.ptptb
+  -g $ASSEMBLE_ID -r out.ptptb -o out3\fib_variant27_2addr.ptptb
 dir out3\fib_variant27_2addr.ptptb
 
 4)✅ $n = Read-Host "введите n (например, 5)"
