@@ -1,4 +1,4 @@
-1\) 1 LAB 
+#**1\) 1 LAB** :rocket:
 
 ✅ .venv\Scripts\activate
 
@@ -32,8 +32,9 @@ E) Некорректный пример: отчет об ошибке в stderr
 
 То есть ошибка указывается с номером строки/столбца.
 
+---
 
-2\) 2 LAB 
+#**2\) 2 LAB** :rocket:
 
 ✅ python -m task2.cli .\src\examples\ok_all_constructs.v3 .\out2 --png --svg
 
@@ -68,7 +69,9 @@ more .\out_bad\call_graph.errors.txt
 
 Ожидаемый результат: в файле call_graph.errors.txt будет ошибка с указанием строки и столбца, например [parse error] line=... col=...
 
-3\) 3 LAB 
+---
+
+#**3\) 3 LAB** :rocket:
 
 ✅ python -m task3.cli .\src\examples\task3_demo.v3 .\out3 --asm .\out3\result_real_2addr.asm --keep-cfg
 
