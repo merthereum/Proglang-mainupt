@@ -8,7 +8,7 @@
 
 Ожидаемый результат:
 
-терминале нет ошибок
+:star: терминале нет ошибок
 
 B) Файл создается:
 
@@ -56,7 +56,7 @@ ENTRY → dim → присваивания if (x > 0) ветви True/False и j
 
 ✅ start .\out2_calls\call_graph.png
 
-Если хотите, откройте также CFG функций:
+откройте также CFG функций:
 
 ✅ start .\out2_calls\graph\main_tree2.png
 
@@ -67,7 +67,8 @@ ENTRY → dim → присваивания if (x > 0) ветви True/False и j
 ✅ python -m task2.cli .\src\examples\bad_syntax.v3 .\out_bad --png
 more .\out_bad\call_graph.errors.txt
 
-Ожидаемый результат: в файле call_graph.errors.txt будет ошибка с указанием строки и столбца, например [parse error] line=... col=...
+Ожидаемый результат: 
+:star: в файле call_graph.errors.txt будет ошибка с указанием строки и столбца, например [parse error] line=... col=... 
 
 ---
 
@@ -120,7 +121,7 @@ Get-Content .\out3\disasm_real_2addr.txt -TotalCount 10 | Out-Host
 .\tools\ptp\Portable.RemoteTasks.Manager.exe -ul 503291 -up "b551163b-6741-4c92-b016-01f99e8a9947" -g $RUNID -r stderr.txt -o out3\run_stderr_real_2addr.txt
 .\tools\ptp\Portable.RemoteTasks.Manager.exe -ul 503291 -up "b551163b-6741-4c92-b016-01f99e8a9947" -g $RUNID -r trace.txt  -o out3\run_trace_real_2addr.txt
 
---- Calculator ----
+--- Calculator ---- :rocket:
 
 1. Показать входной файл
 
@@ -144,9 +145,11 @@ finishMnemonicName hlt
 3. Загрузить stdout по RUNID + показать в шестнадцатеричном виде
 
 ✅ .\tools\ptp\Portable.RemoteTasks.Manager.exe -ul 503291 -up "b551163b-6741-4c92-b016-01f99e8a9947" -g $RUNID -r stdout.txt -o out3\run_stdout_calc.txt
-✅  Format-Hex -Path .\out3\run_stdout_calc.txt       Здесь будет видно 06 → результат. Эти 3 шага означают, что "калькулятор работает".
+✅  Format-Hex -Path .\out3\run_stdout_calc.txt       
 
----FIBONACCI---
+:star: Здесь будет видно 06 → результат. Эти 3 шага означают, что "калькулятор работает".
+
+---FIBONACCI--- :rocket:
 
 1) ✅ cd C:\Users\Mert\task1
 $env:PYTHONPATH = "$PWD\src"
