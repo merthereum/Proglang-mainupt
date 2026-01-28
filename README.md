@@ -1,4 +1,4 @@
-#**1\) 1 LAB** :rocket:
+**1\) 1 LAB** :rocket:
 
 ✅ .venv\Scripts\activate
 
@@ -34,7 +34,7 @@ E) Некорректный пример: отчет об ошибке в stderr
 
 ---
 
-#**2\) 2 LAB** :rocket:
+**2\) 2 LAB** :rocket:
 
 ✅ python -m task2.cli .\src\examples\ok_all_constructs.v3 .\out2 --png --svg
 
@@ -71,7 +71,7 @@ more .\out_bad\call_graph.errors.txt
 
 ---
 
-#**3\) 3 LAB** :rocket:
+**3\) 3 LAB** :rocket:
 
 ✅ python -m task3.cli .\src\examples\task3_demo.v3 .\out3 --asm .\out3\result_real_2addr.asm --keep-cfg
 
